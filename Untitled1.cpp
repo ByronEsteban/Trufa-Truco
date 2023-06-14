@@ -3,6 +3,9 @@
 #include <string.h>
 #include <time.h>
 #include <stdbool.h>
+#include <iostream>
+#include <vector>
+
 //alto codigo
 struct Carta{
 	int valor;
@@ -11,39 +14,47 @@ struct Carta{
 	bool repartida;
 };
 
-void tira_carta(Carta cartas_tiradas_jug[], Carta mano_jugador, int turno){ //2.3.1
-  cartas_tiradas_jug[turno] = mano_jugador;
+void tira_carta(int opcion, std::vector<Carta> &cartas_tiradas_jug, Carta carta_tirada, std::vector<Carta> &mano_jugador, std::vector<std::string> &opciones, int turno){ //2.3.1
+  cartas_tiradas_jug.push_back(carta_tirada);
+	opciones.erase(opciones.begin() + opcion);
+	mano_jugador.erase(mano_jugador.begin() + opcion);
   for(int i = 0; i <= turno; i++){
   	printf("\n\n%d de %s\n\n", cartas_tiradas_jug[i].valor, cartas_tiradas_jug[i].palo);
   }
 }
 
-void imprimir_cartas(Carta mano_jugador[]){
+void imprimir_cartas(std::vector<Carta> &mano_jugador){
   system("cls");
-  printf("\t1. %d de %s\t", mano_jugador[0].valor, mano_jugador[0].palo);
-  printf("2. %d de %s\t", mano_jugador[1].valor, mano_jugador[1].palo);
-  printf("3. %d de %s\t", mano_jugador[2].valor, mano_jugador[2].palo);
+  printf("\t");
+  for (int i = 0; i < mano_jugador.size(); i++) {
+		printf("%d. %d de %s\t", i+1, mano_jugador[i].valor, mano_jugador[i].palo);
+	}
   printf("\n\n");
 }
 
-void turno_jugador(Carta cartas_tiradas_jug[], Carta cartas_tiradas_ia[], Carta mano_jugador[], int puntos_ronda_jug, int puntos_ronda_ia, int turno){//2.3
+void turno_jugador(std::vector<std::string> &opciones, std::vector<Carta> &cartas_tiradas_jug, std::vector<Carta> &cartas_tiradas_ia, std::vector<Carta> &mano_jugador, int puntos_ronda_jug, int puntos_ronda_ia, int turno){//2.3
   int opcion;
-  while (1) {
+  
+  while (!mano_jugador.empty()) {
     imprimir_cartas(mano_jugador);
-    printf("1- Carta 1\n2- Carta 2\n3- Carta 3\n4- Truco\n5- Envido\n6- Flor\n7- Retirarse\n");
+		printf("Seleccione una opción:\n");
+		for (int i = 0; i < opciones.size(); i++) {
+			printf("%d. %s\n", i+1, opciones[i].c_str());
+		}
     scanf("%d", &opcion);
     switch (opcion) {
       case 1:
-        tira_carta(cartas_tiradas_jug, mano_jugador[0], turno);
-        Sleep(2000);
+        tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-1], mano_jugador, opciones, turno);
+        Sleep(1500);
+
         break; //borrar
       case 2:
-		tira_carta(cartas_tiradas_jug, mano_jugador[1], turno);
-        Sleep(2000);
+		tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-1], mano_jugador, opciones, turno);
+        Sleep(1500);
         break;
       case 3:
-        tira_carta(cartas_tiradas_jug, mano_jugador[2], turno);
-        Sleep(2000);
+        tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-1], mano_jugador, opciones, turno);
+        Sleep(1500);
         break;
      /* case 4:
         canta_truco();
@@ -60,14 +71,14 @@ void turno_jugador(Carta cartas_tiradas_jug[], Carta cartas_tiradas_ia[], Carta 
   }
 }
 
-void repartir_baraja(Carta baraja[], Carta mano_jugador[], Carta mano_ia[]){ //2.2
+void repartir_baraja(Carta baraja[], std::vector<Carta> &mano_jugador, std::vector<Carta> mano_ia){ //2.2
 	int i = 0, j = 0, k = 0;
 	while (i < 6){
 		int r = rand()%40;
 		if(!baraja[r].repartida){
 			baraja[r].repartida = true;
-			if(i%2 == 0) mano_jugador[j++] = baraja[r];
-			else mano_ia[k++] = baraja[r];
+			if(i%2 == 0) mano_jugador.push_back(baraja[r]);
+			else mano_ia.push_back(baraja[r]);
 			i++;
 		}
 	}
@@ -89,22 +100,31 @@ void desordenar_baraja(Carta baraja[]){ //2.1
 
 void truco(Carta baraja[]){ //2
 	desordenar_baraja(baraja);
-	Carta mano_jugador[3], mano_ia[3];
+	std::vector<Carta> mano_jugador, mano_ia;
 	int ronda = 0;
   int puntos_jug = 0, puntos_ia = 0;
   bool jugador_es_mano = true;
 	while (puntos_jug < 30 || puntos_ia < 30){
-    Carta cartas_tiradas_jug[3];
-    Carta cartas_tiradas_ia[3];
+    std::vector<Carta> cartas_tiradas_jug, cartas_tiradas_ia;
 		repartir_baraja(baraja, mano_jugador, mano_ia);
     //printf("\n\n%d de %s\n\n", mano_jugador[0].valor, mano_jugador[0].palo);
     int puntos_ronda_jug = 0, puntos_ronda_ia = 0;
     if(jugador_es_mano){
-			turno_jugador(cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, puntos_ronda_jug, puntos_ronda_ia, 0);
+    	std::vector<std::string> opciones;
+		opciones.push_back("Carta 1");
+		opciones.push_back("Carta 2");
+		opciones.push_back("Carta 3");
+		opciones.push_back("Truco");
+		opciones.push_back("Envido");
+		opciones.push_back("Flor");
+		opciones.push_back("Retirarse");
+			turno_jugador(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, puntos_ronda_jug, puntos_ronda_ia, 0);
 			//turno_ia();
-			turno_jugador(cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, puntos_ronda_jug, puntos_ronda_ia, 1);
+			opciones.erase(opciones.begin() + 3);
+			opciones.erase(opciones.begin() + 4);
+			turno_jugador(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, puntos_ronda_jug, puntos_ronda_ia, 1);
 			//turno_ia();
-			turno_jugador(cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, puntos_ronda_jug, puntos_ronda_ia, 2);
+			turno_jugador(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, puntos_ronda_jug, puntos_ronda_ia, 2);
 			/*turno_ia();
 		} else{
 			turno_ia();
