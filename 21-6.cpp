@@ -15,30 +15,40 @@ struct Carta{
 	bool repartida;
 };
 
-void carta_ganada(int carta_ganada_jug, int carta_ganada_ia, int posicion_jug, int posicion_ia, bool hizo_primera){
-	if(posicion_jug < posicion_ia) carta_ganada_ia++;
-	else {
-		if(posicion_jug == posicion_ia) carta_ganada_ia++;
-		carta_ganada_jug++;
+void canta_truco(int puntos_ronda, std::vector<std::string> &opciones){
+	//if(ia_acepta())
+	if(rand()%2){
+		puntos_ronda++;
+		opciones.erase(opciones.begin() + 3);
+		opciones.erase(opciones.begin() + 3);
+		//cartas_tiradas_ia.push_back(mano_ia[r2]);
+		//mano_ia.erase(mano_ia.begin() + r2);
+		//opciones.erase()
 	}
-	if (carta_ganada_ia == 2 && carta_ganada_jug == 2) {
-		if(turno == 1) {
-			carta_ganada_ia--;
-			carta_ganada_jug--;
-			return;
-		}
-		if (hizo_primera) win(0);
-		else win(1);
-	} else{
-		if(carta_ganada_ia == 2) win(0);
-		else win(1);
-	}
+	exit(0);
 }
 
 void win(int ganador){
 	if(ganador) printf("Gano el jugador\n");
 	else printf("Gano la IA\n");
 	exit(0);
+}
+
+void carta_ganada(int carta_ganada_jug, int carta_ganada_ia, bool hizo_primera, int turno){
+	if (carta_ganada_ia == 2 && carta_ganada_jug == 2) {
+		if(turno == 1) {
+			carta_ganada_ia--;
+			carta_ganada_jug--;
+			return;
+		}
+		if (!hizo_primera) win(0);
+		else win(1);
+	} else{
+		if(carta_ganada_ia == 2) win(0);
+		else if(carta_ganada_jug == 2) win(1);
+	}
+	printf("\n\n%d - %d \n\n", carta_ganada_ia, carta_ganada_jug);
+	Sleep(2000);
 }
 
 void tira_carta_ia(Carta carta_tirada_jug, std::vector<Carta> &cartas_tiradas_ia, std::vector<Carta> &mano_ia, int turno){
@@ -64,7 +74,7 @@ void imprimir_cartas(std::vector<Carta> &mano_jugador){
   printf("\n\n");
 }
 
-void turno_jugador(std::vector<std::string> &opciones, std::vector<Carta> &cartas_tiradas_jug, std::vector<Carta> &cartas_tiradas_ia, std::vector<Carta> &mano_jugador, int puntos_ronda_jug, int puntos_ronda_ia, int turno){//2.3
+void turno_jugador(std::vector<std::string> &opciones, std::vector<Carta> &cartas_tiradas_jug, std::vector<Carta> &cartas_tiradas_ia, std::vector<Carta> &mano_jugador, int puntos_ronda, int turno){//2.3
   int opcion;
   while (!mano_jugador.empty()) {
 	while(1){
@@ -78,20 +88,22 @@ void turno_jugador(std::vector<std::string> &opciones, std::vector<Carta> &carta
 	}
     switch (opcion) {
       case 1:
-        tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-1], mano_jugador, opciones, turno);
+        tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-2], mano_jugador, opciones, turno);
         Sleep(1500);
         break; //borrar
       case 2:
-		tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-1], mano_jugador, opciones, turno);
+		tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-2], mano_jugador, opciones, turno);
         Sleep(1500);
         break;
       case 3:
-        tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-1], mano_jugador, opciones, turno);
+        tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-2], mano_jugador, opciones, turno);
         Sleep(1500);
         break;
-     /* case 4:
-        canta_truco();
-      case 5:
+      case 4:
+        canta_truco(puntos_ronda, opciones);
+        break;
+      
+      /*case 5:
         canta_envido();
       case 6:
         canta_flor()
@@ -153,58 +165,63 @@ void truco(Carta baraja[]){ //2
     if(mano_ia.empty()) printf("\n\nasdasd\n\n");
     //Sleep(30000);
     int puntos_ronda_jug = 0, puntos_ronda_ia = 0;
+    int puntos_ronda = 1;
+    int carta_ganada_jug = 0, carta_ganada_ia = 0;
     if(jugador_es_mano){
-    	int carta_ganada_jug = 0, carta_ganada_ia = 0;
-			bool hizo_primera;
+		bool hizo_primera;
     	std::vector<std::string> opciones;
-		opciones.push_back("Carta 1");
+    	opciones.push_back("Carta 1");
 		opciones.push_back("Carta 2");
 		opciones.push_back("Carta 3");
 		opciones.push_back("Truco");
 		opciones.push_back("Envido");
 		opciones.push_back("Flor");
 		opciones.push_back("Retirarse");
-			turno_jugador(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, puntos_ronda_jug, puntos_ronda_ia, 0);
-			//ia_canta_envido
-			//ia_canta_truco
-			tira_carta_ia(cartas_tiradas_jug[0], cartas_tiradas_ia, mano_ia, 0);
-      		Sleep(1500);
+		turno_jugador(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, puntos_ronda, 0);
+		//ia_canta_envido
+		//ia_canta_truco
+		tira_carta_ia(cartas_tiradas_jug[0], cartas_tiradas_ia, mano_ia, 0);
+      	Sleep(1500);
+      	if(puntos_ronda <= 1){
+      		opciones.erase(opciones.begin() + 3);
 			opciones.erase(opciones.begin() + 3);
-			opciones.erase(opciones.begin() + 3);
-
-			//EDITAR EL CODIGO CON LA NUEVA FUNCION
-
-
-			if(cartas_tiradas_jug[0].posicion > cartas_tiradas_ia[0].posicion){
-				carta_ganada(carta_ganada_jug, carta_ganada_ia, cartas_tiradas_jug[0].posicion, cartas_tiradas_ia[0].posicion);
-				carta_ganada_ia++;
-				tira_carta_ia(cartas_tiradas_jug[0], cartas_tiradas_ia, mano_ia, 1);
-	      		Sleep(1500);
-				turno_jugador(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, puntos_ronda_jug, puntos_ronda_ia, 1);
-			} else {
-				if(cartas_tiradas_jug[0].posicion == cartas_tiradas_ia[0].posicion) carta_ganada_ia++;
-				carta_ganada_jug++;
-				turno_jugador(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, puntos_ronda_jug, puntos_ronda_ia, 1);
-				tira_carta_ia(cartas_tiradas_jug[1], cartas_tiradas_ia, mano_ia, 1);
-	      		Sleep(1500);
-			}
-			if(cartas_tiradas_jug[1].posicion > cartas_tiradas_ia[1].posicion){
-				carta_ganada_ia++;
-				if(carta_ganada_ia == 2) win(0); //EDITAR TODOS ESTOS IF
-				tira_carta_ia(cartas_tiradas_jug[1], cartas_tiradas_ia, mano_ia, 2);
-	      		Sleep(1500);
-				turno_jugador(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, puntos_ronda_jug, puntos_ronda_ia, 2);
-			} else {
-				if(cartas_tiradas_jug[0].posicion == cartas_tiradas_ia[0].posicion) carta_ganada_ia++;
-				carta_ganada_jug++;
-				if(carta_ganada_jug == 2) win(1);
-				turno_jugador(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, puntos_ronda_jug, puntos_ronda_ia, 2);
-				tira_carta_ia(cartas_tiradas_jug[2], cartas_tiradas_ia, mano_ia, 2);
-	      		Sleep(1500);
-			}
-			if(carta_ganada_ia == 2) win(0);
-			else win(1);
-			Sleep(9000);
+		}
+		if(cartas_tiradas_jug[0].posicion > cartas_tiradas_ia[0].posicion){
+			hizo_primera = false;
+			carta_ganada_ia++;
+			tira_carta_ia(cartas_tiradas_jug[0], cartas_tiradas_ia, mano_ia, 1);
+	      	Sleep(1500);
+			turno_jugador(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, puntos_ronda, 1);
+		} else {
+			if(cartas_tiradas_jug[0].posicion == cartas_tiradas_ia[0].posicion) carta_ganada_ia++;
+			hizo_primera = true;
+			carta_ganada_jug++;
+			turno_jugador(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, puntos_ronda, 1);
+			tira_carta_ia(cartas_tiradas_jug[1], cartas_tiradas_ia, mano_ia, 1);
+	      	Sleep(1500);
+		} 
+		if(cartas_tiradas_jug[1].posicion > cartas_tiradas_ia[1].posicion){
+			carta_ganada_ia++;
+			carta_ganada(carta_ganada_jug, carta_ganada_ia, hizo_primera, 1);
+			tira_carta_ia(cartas_tiradas_jug[1], cartas_tiradas_ia, mano_ia, 2);
+	      	Sleep(1500);
+			turno_jugador(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, puntos_ronda, 2);
+		} else {
+			if(cartas_tiradas_jug[1].posicion == cartas_tiradas_ia[1].posicion) carta_ganada_ia++;
+			carta_ganada_jug++;
+			carta_ganada(carta_ganada_jug, carta_ganada_ia, hizo_primera, 1);
+			turno_jugador(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, puntos_ronda, 2);
+			tira_carta_ia(cartas_tiradas_jug[2], cartas_tiradas_ia, mano_ia, 2);
+	      	Sleep(1500);
+		}
+		turno_jugador(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, puntos_ronda, 1);
+		if(cartas_tiradas_jug[2].posicion > cartas_tiradas_ia[2].posicion) carta_ganada_ia++;
+		else {
+			if(cartas_tiradas_jug[2].posicion == cartas_tiradas_ia[2].posicion) carta_ganada_ia++;
+			else carta_ganada_jug++;
+		}
+		carta_ganada(carta_ganada_jug, carta_ganada_ia, hizo_primera, 2);
+		Sleep(5000);
 			/*turno_ia();
 		} else{
 			turno_ia();
@@ -214,6 +231,7 @@ void truco(Carta baraja[]){ //2
 			turno_ia();
 			turno_jugador();
 		*/}
+		jugador_es_mano = !jugador_es_mano;
 	}
 }
 
