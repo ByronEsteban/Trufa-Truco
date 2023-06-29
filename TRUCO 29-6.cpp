@@ -265,10 +265,10 @@ void imprimir_cartas(std::vector<Carta> &mano_jugador){
 }
 
 void turno_jugador(std::vector<std::string> &opciones, std::vector<Carta> &cartas_tiradas_jug, std::vector<Carta> &cartas_tiradas_ia, std::vector<Carta> &mano_jugador, std::vector<Carta> &mano_ia, int &puntos_ronda, int &puntos_envido, int turno){//2.3
-  int opcion;
+	int opcion;
 	int tanto_jug = calcular_tanto_jug(mano_jugador);
 	int tanto_ia = calcular_tanto_ia(mano_ia);
-  while (!mano_jugador.empty()) {
+  	while (!mano_jugador.empty()) {
 		while(1){
 			imprimir_cartas(mano_jugador);
 			printf("Ronda = %d\n", turno);
@@ -280,38 +280,42 @@ void turno_jugador(std::vector<std::string> &opciones, std::vector<Carta> &carta
 			for (int i = 0; i < opciones.size(); i++) {
 				printf("%d. %s\n", i+1, opciones[i].c_str());
 			}
-			scanf("%d", &opcion);
+			char key = _getch();
+			opcion = atoi(&key);
 			if(opcion >= 1 && opcion <= opciones.size()) break;
 		}
 		if(turno == 0){
 			if(opciones.size() == 7){
 				opciones.erase(opciones.begin() + 4);
 				opciones.erase(opciones.begin() + 4);
+				if(opcion >= 1 && opcion <= 3){
+					tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-1], mano_jugador, opciones, turno);
+					break;
+				}
+				if(opcion == 4) canta_truco(puntos_ronda, opciones);
+				else if(opcion == 5) {
+					puntos_envido = jug_canta_envido(tanto_jug, tanto_ia, 1);
+					Sleep(2000);
+					if(puntos_envido < 0) puntos_envido = puntos_envido * -1;
+				}
+				//else if(opcion == 6) //canta_flor(puntos_ronda, opciones);
+				else if(opcion == 7) exit(0);
 			}
-			if(opcion >= 1 && opcion <= 3){
-				tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-1], mano_jugador, opciones, turno);
-				break;
-			} 
-			if(opcion == 4) {
-				canta_truco(puntos_ronda, opciones);
-			}
-			else if(opcion == 5) {
-				puntos_envido = jug_canta_envido(tanto_jug, tanto_ia, 1);
-				Sleep(2000);
-				if(puntos_envido < 0) puntos_envido = puntos_envido * -1;
-			}
-			//else if(opcion == 6) //canta_flor(puntos_ronda, opciones);
-			else exit(0);
+			else {
+				if(opcion >= 1 && opcion <= 3){
+					tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-1], mano_jugador, opciones, turno);
+					break;
+				} 
+				if(opciones.size() == 5 && opcion == 4) canta_truco(puntos_ronda, opciones);
+				else exit(0);
+			}		
 		}
 		else if(turno == 1){
 			if(opcion == 1 || opcion == 2){
 				tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-1], mano_jugador, opciones, turno);
 				break;
 			}
-			else if(opcion == 3){
-				puntos_ronda++;
-				canta_truco(puntos_ronda, opciones);
-			}
+			if(opciones.size() == 4 && opcion == 3) canta_truco(puntos_ronda, opciones);
 			else exit(0);
 		}
   		else{
@@ -319,10 +323,7 @@ void turno_jugador(std::vector<std::string> &opciones, std::vector<Carta> &carta
 				tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-1], mano_jugador, opciones, turno);
 				break;
 			}
-			else if(opcion == 2){
-				puntos_ronda++;
-				canta_truco(puntos_ronda, opciones);
-			}
+			if(opciones.size() == 3 && opcion == 2) canta_truco(puntos_ronda, opciones);
 			else exit(0);
 		}
   }
