@@ -1,5 +1,5 @@
 # Trufa-Truco
-###Falta:
+### Falta:
 + Que puedas cantar vale 4
 + Cambiar el scanf de la funcion jug_canta_truco
 + Hacer la flor
