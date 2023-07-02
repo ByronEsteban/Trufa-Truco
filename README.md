@@ -1,7 +1,6 @@
 # Trufa-Truco
 ### Falta:
-+ Que puedas cantar vale 4
-+ Cambiar el scanf de la funcion jug_canta_truco
++ Modificar el falta envido
 + Hacer la flor
 + Calcular la sumatoria de puntos por ronda
 + Replicar las funciones para la IA
