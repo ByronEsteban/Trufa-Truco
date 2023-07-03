@@ -9,8 +9,8 @@
 #include <vector>
 
 //alto codigo
-bool jug_se_retira = false;
-bool ia_se_retira = false;
+bool jug_se_retira = false, ia_se_retira = false;
+int puntos_jug = 0, puntos_ia = 0;
 struct Carta{
 	int valor;
 	char *palo;
@@ -198,6 +198,7 @@ void ia_canta_truco(int &puntos_ronda, std::vector<std::string> &opciones, bool 
 void canta_truco(int &puntos_ronda, std::vector<std::string> &opciones, bool &ia_puede_cantar_truco);
 
 void ia_canta_truco(int &puntos_ronda, std::vector<std::string> &opciones, bool &ia_puede_cantar_truco){
+	Sleep(1000);
 	if (puntos_ronda == 1){ //IA canta truco / IA empieza
 		ia_puede_cantar_truco = false;
 		printf("IA: \"Truco!!!\"\n");
@@ -321,12 +322,6 @@ void canta_truco(int &puntos_ronda, std::vector<std::string> &opciones, bool &ia
 	}
 }
 
-void win(int ganador_mano, int &ganador){
-	if(ganador_mano) ganador = 0;
-	else printf("Gano la IA\n");
-	exit(0);
-}
-
 void carta_ganada(int carta_ganada_jug, int carta_ganada_ia, bool hizo_primera, int turno, int &ganador){
 	if (carta_ganada_ia == 2 && carta_ganada_jug == 2) {
 		if(turno == 1) {
@@ -348,24 +343,59 @@ void tira_carta_ia(std::vector<Carta> &cartas_tiradas_ia, std::vector<Carta> &ma
   int r2 = rand()% (3-turno);
   cartas_tiradas_ia.push_back(mano_ia[r2]);
 	mano_ia.erase(mano_ia.begin() + r2);
-  printf("\n\n%d de %s\n\n", cartas_tiradas_ia[turno].valor, cartas_tiradas_ia[turno].palo);
+  //printf("\n\n%d de %s\n\n", cartas_tiradas_ia[turno].valor, cartas_tiradas_ia[turno].palo);
 }
 
 void tira_carta(int opcion, std::vector<Carta> &cartas_tiradas_jug, Carta carta_tirada, std::vector<Carta> &mano_jugador, std::vector<std::string> &opciones, int turno){ //2.3.1
   cartas_tiradas_jug.push_back(carta_tirada);
 	opciones.erase(opciones.begin() + opcion);
 	mano_jugador.erase(mano_jugador.begin() + opcion);
-  printf("\n\n%d de %s\n\n", cartas_tiradas_jug[turno].valor, cartas_tiradas_jug[turno].palo);
-  Sleep(1500);
+  //printf("\n\n%d de %s\n\n", cartas_tiradas_jug[turno].valor, cartas_tiradas_jug[turno].palo);
+  //Sleep(1500);
+}
+
+void imprimir_cartas_tiradas(std::vector<Carta> &cartas_tiradas_jug, std::vector<Carta> &cartas_tiradas_ia){
+  	printf("\t");
+  	for (int i = 0; i < cartas_tiradas_ia.size(); i++) {
+		printf("%d de %s\t", cartas_tiradas_ia[i].valor, cartas_tiradas_ia[i].palo);
+	}
+  	printf("\n\n\t");
+	for (int i = 0; i < cartas_tiradas_jug.size(); i++) {
+		printf("%d de %s\t", cartas_tiradas_jug[i].valor, cartas_tiradas_jug[i].palo);
+	}
+	printf("\n\n\t--------------\n\n");
 }
 
 void imprimir_cartas(std::vector<Carta> &mano_jugador){
-  system("cls");
   printf("\t");
   for (int i = 0; i < mano_jugador.size(); i++) {
 		printf("%d. %d de %s\t", i+1, mano_jugador[i].valor, mano_jugador[i].palo);
 	}
   printf("\n\n");
+}
+
+void imprimir(std::vector<std::string> &opciones, std::vector<Carta> &cartas_tiradas_jug, std::vector<Carta> &cartas_tiradas_ia, std::vector<Carta> &mano_jugador){
+	system("cls");
+	printf("Puntos jug: ");
+	for (int i = 0; i < puntos_jug; i++) {
+		if(i % 5 == 0) printf(" ");
+		if(i == 15) printf("- ");
+		printf("|");
+	}
+	printf("\n\n");
+	printf("Puntos IA:  ");
+	for (int i = 0; i < puntos_ia; i++) {
+		if(i % 5 == 0) printf(" ");
+		if(i == 15) printf("- ");
+		printf("|");
+	}
+	printf("\n\n\n");
+	imprimir_cartas_tiradas(cartas_tiradas_jug, cartas_tiradas_ia);
+	imprimir_cartas(mano_jugador);
+	printf("Seleccione una opcion:\n");
+	for (int i = 0; i < opciones.size(); i++) {
+		printf("%d. %s\n", i+1, opciones[i].c_str());
+	}
 }
 
 void turno_jugador(std::vector<std::string> &opciones, std::vector<Carta> &cartas_tiradas_jug, std::vector<Carta> &cartas_tiradas_ia, std::vector<Carta> &mano_jugador, std::vector<Carta> &mano_ia, int &puntos_ronda, int &puntos_envido, int turno, bool &ia_puede_cantar_truco){//2.3
@@ -375,15 +405,9 @@ void turno_jugador(std::vector<std::string> &opciones, std::vector<Carta> &carta
   	while (!mano_jugador.empty()) {
   		if(ia_se_retira || jug_se_retira) return;
 		while(1){
-			imprimir_cartas(mano_jugador);
-			printf("Ronda = %d\n", turno);
-			printf("puntos envido = %d\n", puntos_envido);
-			printf("Seleccione una opcion:\n");
-			for (int i = 0; i < opciones.size(); i++) {
-				printf("%d. %s\n", i+1, opciones[i].c_str());
-			}
+			imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
 			char key = _getch();
-			opcion = atoi(&key);
+			opcion = key - '0';
 			if(opcion >= 1 && opcion <= opciones.size()) break;
 		}
 		if(turno == 0){
@@ -392,6 +416,7 @@ void turno_jugador(std::vector<std::string> &opciones, std::vector<Carta> &carta
 				opciones.erase(opciones.begin() + 4);
 				if(opcion >= 1 && opcion <= 3){
 					tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-1], mano_jugador, opciones, turno);
+					imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
 					break;
 				}
 				if(opcion == 4) canta_truco(puntos_ronda, opciones, ia_puede_cantar_truco);
@@ -409,6 +434,7 @@ void turno_jugador(std::vector<std::string> &opciones, std::vector<Carta> &carta
 			else {
 				if(opcion >= 1 && opcion <= 3){
 					tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-1], mano_jugador, opciones, turno);
+					imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
 					break;
 				} 
 				if(opciones.size() == 5 && opcion == 4) canta_truco(puntos_ronda, opciones, ia_puede_cantar_truco);
@@ -421,6 +447,7 @@ void turno_jugador(std::vector<std::string> &opciones, std::vector<Carta> &carta
 		else if(turno == 1){
 			if(opcion == 1 || opcion == 2){
 				tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-1], mano_jugador, opciones, turno);
+				imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
 				break;
 			}
 			if(opciones.size() == 4 && opcion == 3) canta_truco(puntos_ronda, opciones, ia_puede_cantar_truco);
@@ -432,6 +459,7 @@ void turno_jugador(std::vector<std::string> &opciones, std::vector<Carta> &carta
   		else{
 			if(opcion == 1) {
 				tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-1], mano_jugador, opciones, turno);
+				imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
 				break;
 			}
 			if(opciones.size() == 3 && opcion == 2) canta_truco(puntos_ronda, opciones, ia_puede_cantar_truco);
@@ -444,11 +472,10 @@ void turno_jugador(std::vector<std::string> &opciones, std::vector<Carta> &carta
 }
 
 void turno_ia(std::vector<std::string> &opciones, std::vector<Carta> &cartas_tiradas_ia, std::vector<Carta> &mano_ia, int &puntos_ronda, int turno, bool &ia_puede_cantar_truco){
-	if(ia_puede_cantar_truco) printf("Puedo cantar truco!!!\n");
-	else printf("NO puedo cantar truco!!!\n");
-	if(1 || rand()%3 == 0) ia_canta_truco(puntos_ronda, opciones, ia_puede_cantar_truco);
+	if(rand()%3 == 0) ia_canta_truco(puntos_ronda, opciones, ia_puede_cantar_truco);
+	Sleep(1000);
 	tira_carta_ia(cartas_tiradas_ia, mano_ia, turno);
-	Sleep(1500);
+	//Sleep(1500);
 }
 
 void desordenar_baraja(Carta baraja[]){ //2.1
@@ -464,9 +491,10 @@ void desordenar_baraja(Carta baraja[]){ //2.1
 void truco(Carta baraja[]){ //2
 	desordenar_baraja(baraja);
 	int ronda = 0;
-  	int puntos_jug = 0, puntos_ia = 0;
+  	puntos_jug = 0;
+	puntos_ia = 0;
   	bool jugador_es_mano = true;
-	while (puntos_jug < 30 || puntos_ia < 30){
+	while (puntos_jug < 30 && puntos_ia < 30){
     	std::vector<Carta> cartas_tiradas_jug, cartas_tiradas_ia;
     	std::vector<Carta> mano_jugador, mano_ia;
 		//repartir_baraja(baraja, mano_jugador, mano_ia);
@@ -509,6 +537,7 @@ void truco(Carta baraja[]){ //2
 			}
 			//ia_canta_envido
 			turno_ia(opciones, cartas_tiradas_ia, mano_ia, puntos_ronda, 0, ia_puede_cantar_truco);
+			imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
 			if(ia_se_retira){
 				ganador = true;
 				break;
@@ -521,6 +550,7 @@ void truco(Carta baraja[]){ //2
 				hizo_primera = false;
 				carta_ganada_ia++;
 				turno_ia(opciones, cartas_tiradas_ia, mano_ia, puntos_ronda, 1, ia_puede_cantar_truco);
+				imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
 				if(ia_se_retira){
 					ganador = true;
 					break;
@@ -553,6 +583,7 @@ void truco(Carta baraja[]){ //2
 					break;
 				}
 				turno_ia(opciones, cartas_tiradas_ia, mano_ia, puntos_ronda, 1, ia_puede_cantar_truco);
+				imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
 				if(ia_se_retira){
 					ganador = true;
 					break;
@@ -567,6 +598,7 @@ void truco(Carta baraja[]){ //2
 				carta_ganada(carta_ganada_jug, carta_ganada_ia, hizo_primera, 1, ganador);
 				if(ganador == 0 || ganador == 1) break;
 				turno_ia(opciones, cartas_tiradas_ia, mano_ia, puntos_ronda, 2, ia_puede_cantar_truco);
+				imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
 				if(ia_se_retira){
 					ganador = true;
 					break;
@@ -600,6 +632,7 @@ void truco(Carta baraja[]){ //2
 					break;
 				}
 				turno_ia(opciones, cartas_tiradas_ia, mano_ia, puntos_ronda, 2, ia_puede_cantar_truco);
+				imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
 				if(ia_se_retira){
 					ganador = true;
 					break;
@@ -654,6 +687,7 @@ void truco(Carta baraja[]){ //2
 		Sleep(2000);
 		//jugador_es_mano = !jugador_es_mano;
 	}
+	printf("GANASTE\n");
 }
 
 void imprimir_orden_cartas(Carta orden_de_cartas[]){
