@@ -1,5 +1,5 @@
-# Trufa-Truco // 2/7/2023
-### Cosas que hace/se pueden hacer:
+# Trufa-Truco - 2/7/2023
+### Cosas que el programa hace/se pueden hacer:
 + Cantar truco
 + Cantar envido
 + (ambos en cualquier momento)
