@@ -8,6 +8,7 @@
 + Suma los puntos (cuando alguno llega a 30 termina)
 + Tiene los estilos casi completos
 ### Falta:
++ COMENTAR!!!
 + Modificar el falta envido
 + Hacer ia_canta_envido
 + Hacer el codigo para cuando el jugador no es mano
