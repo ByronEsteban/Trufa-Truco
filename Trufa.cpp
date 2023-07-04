@@ -1,9 +1,9 @@
-#include "trufa.hpp" //donde se declaran todas las funciones, structs y variables globales
-#include "envido.cpp" //funciones del envido
-#include "truco.cpp" //funciones del truco
-#include "imprimir.cpp" //funciones de imprimir opciones y cartas
-#include "reglas.cpp" //funciones de imprimir reglas
-#include "turnos.cpp" //funciones de los turnos de los jugadores
+#include "Funciones/trufa.hpp" //donde se declaran todas las funciones, structs y variables globales
+#include "Funciones/envido.cpp" //funciones del envido
+#include "Funciones/truco.cpp" //funciones del truco
+#include "Funciones/imprimir.cpp" //funciones de imprimir opciones y cartas
+#include "Funciones/reglas.cpp" //funciones de imprimir reglas
+#include "Funciones/turnos.cpp" //funciones de los turnos de los jugadores
 //en todos los archivos las funciones estan ordenadas segun su orden de aparicion
 
 //alto codigo
@@ -49,7 +49,7 @@ void llenar_baraja(Carta baraja[], int valores[], char *palos[]){
 
 void truco(Carta baraja[]){ 
 	desordenar_baraja(baraja);
-  	puntos_jug = 30;
+  	puntos_jug = 0;
 	puntos_ia = 0;
   	bool jugador_es_mano = rand()%2;
 	while (puntos_jug < 30 && puntos_ia < 30){
@@ -268,11 +268,11 @@ void truco(Carta baraja[]){
 		jugador_es_mano = !jugador_es_mano; //la siguiente ronda comenzara el otro jug
 	}
 	system("cls");
+	printf("\n");
 	if(puntos_jug >= 30){
-		printf("\n\033[34m");
-		printf("               \n");
-		printf("   GANASTE!!   \n");
-		printf("               \n");
+		printf("\t\033[42m               \033[40m\n");
+		printf("\t\033[42m   GANASTE!!   \033[40m\n");
+		printf("\t\033[42m               \033[40m\n");
 		printf("\nApreta ENTER para volver al menu");
 		while(1){
 			char key = _getch();
@@ -280,9 +280,9 @@ void truco(Carta baraja[]){
 		}
 	}
 	else{
-		printf("\033[42m               ");
-				printf("   IA GANO :(  \n");
-				printf("               \n");
+		printf("\t\033[41m                \033[40m\n");
+		printf("\t\033[41m   GANO LA IA   \033[40m\n");
+		printf("\t\033[41m                \033[40m\n");
 		printf("\nApreta ENTER para volver al menu");
 		while(1){
 			char key = _getch();
@@ -309,7 +309,7 @@ int main() { //0
     llenar_baraja(baraja, valores, palos);
     while(1){ //este while funciona como verificador de que ingreso una opcion valida
     	printf("Opciones:\n1. Truco\n2. Trufa - NO DISPONIBLE\n3. Reglas\n4. Apreta ESC para salir\n");
-    	printf("ELegi algo: ");
+    	printf("Elegi algo: ");
     	char key = _getch();  // lee el primer caracter que se ingrese
     	if(key == '1') truco(baraja);
     	//else if (key == '2') NO HUBO TIEMPO :(
@@ -319,10 +319,9 @@ int main() { //0
     			char key = _getch();
     			if(key == 27) break;
 			}
-			system("cls");
 		}
     	else if (key == 27 || key == '4') break;
-    	else system("cls");
+    	system("cls");
 	} 
     return 0;
 }
