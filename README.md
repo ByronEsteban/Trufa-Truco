@@ -1,4 +1,6 @@
-# Trufa-Truco - 2/7/2023
+# Trufa-Truco - 3/7/2023
+El programa principal es el "Trufa.cpp". En "trufa.hpp" estan declaradas las funciones y variables globales. En los demas .cpp estan las funciones completas, estos .cpp son importados en "Trufa.cpp"
+
 ### Cosas que el programa hace/se pueden hacer:
 + Cantar truco
 + Cantar envido
@@ -6,13 +8,8 @@
 + La IA puede cantar truco (en cualquier momento) y envido
 + Retirarse
 + Suma los puntos (cuando alguno llega a 30 termina)
-+ Tiene los estilos casi completos
++ Tiene los estilos completos
 + Imprimir reglas
-### Falta:
-+ COMENTAR!!!
-+ Hacer el codigo para cuando el jugador no es mano
-+ Agregar algun que otro estilo
-+ Corregir algunos bugs en caso de empate
 ### No vamos a:
 + Hacer la trufa
 + Hacer la flor
