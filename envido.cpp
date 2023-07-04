@@ -1,11 +1,3 @@
-#include <stdio.h>
-#include <cstdlib>
-#include <time.h>
-#include <stdbool.h>
-#include <conio.h>
-#include <windows.h>
-#include <iostream>
-#include <vector>
 #include "trufa.hpp"
 
 int calcular_tanto_jug(std::vector<Carta> &mano_jugador){
@@ -18,13 +10,13 @@ int calcular_tanto_jug(std::vector<Carta> &mano_jugador){
 			}
 		}
 	}*/
-	/*else*/ if (!strcmp(mano_jugador[0].palo, mano_jugador[1].palo)) {
+	/*else*/ if (!strcmp(mano_jugador[0].palo, mano_jugador[1].palo)) { //si hay dos cartas del mismo palo, las suma para el tanto
 		envido = 20 + mano_jugador[0].valor_envido + mano_jugador[1].valor_envido;
 	} else if (!strcmp(mano_jugador[2].palo, mano_jugador[1].palo)) {
 		envido = 20 + mano_jugador[2].valor_envido + mano_jugador[1].valor_envido;
 	} else if (!strcmp(mano_jugador[0].palo, mano_jugador[2].palo)) {
 		envido = 20 + mano_jugador[0].valor_envido + mano_jugador[2].valor_envido;
-	} else {
+	} else { //sino, selecciona la mas alta, en base al atributo Carta.valor_envido
 		for (int i = 0; i < 3; i++) {
 			if (mano_jugador[i].valor_envido > envido) {
 				envido = mano_jugador[i].valor_envido;
@@ -34,7 +26,7 @@ int calcular_tanto_jug(std::vector<Carta> &mano_jugador){
 	return envido;
 }
 
-int calcular_tanto_ia(std::vector<Carta> &mano_ia){
+int calcular_tanto_ia(std::vector<Carta> &mano_ia){ //idem a la anterior
 	int envido = 0;
 	/*else*/ if (!strcmp(mano_ia[0].palo, mano_ia[1].palo)) {
 		envido = 20 + mano_ia[0].valor_envido + mano_ia[1].valor_envido;
@@ -52,48 +44,19 @@ int calcular_tanto_ia(std::vector<Carta> &mano_ia){
 	return envido;
 }
 
-bool comparar_tanto(int tanto_jug, int tanto_ia, bool jugador_es_mano, bool quien_canta){
-	Sleep(800);
-	if(quien_canta){
-		if (tanto_jug > tanto_ia || (tanto_jug == tanto_ia && jugador_es_mano)) {
-			printf("Jug: \"%d\"\n", tanto_jug);
-			printf("IA: \"Son buenas...\"\n");
-			Sleep(1000);
-			return true;
-		}
-		else {
-			printf("Jug: \"%d\"\n", tanto_jug);
-			printf("IA: \"%d son mejores!!\"\n", tanto_ia);
-			Sleep(1000);
-			return false;
-		}
-	}
-	else {
-		if (tanto_ia > tanto_jug || (tanto_ia == tanto_jug && !jugador_es_mano)) {
-			printf("IA: \"%d\"\n", tanto_ia);
-			printf("Jug: \"Son buenas...\"\n");
-			Sleep(1000);
-			return false;
-		}
-		else {
-			printf("IA: \"%d\"\n", tanto_ia);
-			printf("Jug: \"%d son mejores!!\"\n", tanto_jug);
-			Sleep(1000);
-			return true;
-		}
-	}
-}
-
+//las funciones para cantar envido son tan largas porque verifican TODAS las combinaciones de subidas del envido
+//las funciones devuelven los puntos ganados del envido. Si el numero es positivo, significa que gano el jugador.
+//si es negativo, gano la IA
 int jug_canta_envido(std::vector<Carta> &mano_jugador, std::vector<Carta> &mano_ia, bool jugador_es_mano){
 	int tanto_jug = calcular_tanto_jug(mano_jugador);
 	int tanto_ia = calcular_tanto_ia(mano_ia);
 	printf("Jug: \"Envido!!!\"\n");
 	if(rand()%2){ //ia quiere
 		if(rand()%3 == 0){ //ia la sube
-			int abc = rand()%10;
-			if(abc == 10){ //falta envido
+			int r1 = rand()%10;
+			if(r1 == 10){ //falta envido
 				printf("IA: \"Falta Envido!!!\"\n");
-				printf("ENTER para s�, ESC para no");
+				printf("ENTER para si, ESC para no\n");
 				while(1){ //verificador
 					char key = _getch();
     				if (key == 13) { //si quiero
@@ -106,9 +69,9 @@ int jug_canta_envido(std::vector<Carta> &mano_jugador, std::vector<Carta> &mano_
     				} 
 				}
 			} 
-			else if (abc >= 7){ //real envido
+			else if (r1 >= 7){ //real envido
 				printf("IA: \"Real Envido!!!\"\n");
-				printf("ENTER para s�, ESC para no, 1 para Falta envido");
+				printf("ENTER para si, ESC para no, 1 para Falta envido\n");
 				while(1){ //verificador
 					char key = _getch();
     				if (key == 13) { //si quiero
@@ -133,7 +96,7 @@ int jug_canta_envido(std::vector<Carta> &mano_jugador, std::vector<Carta> &mano_
 			}
 			else { //envido envido
 				printf("IA: \"Envido!!!\"\n");
-				printf("ENTER para s�, ESC para no, 1, para Real envido, 2 para Falta envido");
+				printf("ENTER para si, ESC para no, 1, para Real envido, 2 para Falta envido\n");
 				while(1){ //verificador
 					char key = _getch();
     				if (key == 13) { //si quiero
@@ -151,7 +114,7 @@ int jug_canta_envido(std::vector<Carta> &mano_jugador, std::vector<Carta> &mano_
     					int bca = rand()%4;
     					if(bca == 0){ //ia canta falta
     						printf("IA: \"Falta Envido!!!\"\n");
-							printf("ENTER para s�, ESC para no");
+							printf("ENTER para si, ESC para no");
 							while(1){ //verificador
 								char key = _getch();
     							if (key == 13) { //si quiero
@@ -201,11 +164,44 @@ int jug_canta_envido(std::vector<Carta> &mano_jugador, std::vector<Carta> &mano_
 	return 1;
 }
 
+bool comparar_tanto(int tanto_jug, int tanto_ia, bool jugador_es_mano, bool quien_canta){
+	Sleep(800);
+	if(quien_canta){ //esto es para ver quien canta su tanto primero
+		if (tanto_jug > tanto_ia || (tanto_jug == tanto_ia && jugador_es_mano)) { //si el jug gana el tanto, o es empate y es mano
+			printf("Jug: \"%d\"\n", tanto_jug);
+			printf("IA: \"Son buenas...\"\n");
+			Sleep(1000);
+			return true;
+		}
+		else { //si pierde
+			printf("Jug: \"%d\"\n", tanto_jug);
+			printf("IA: \"%d son mejores!!\"\n", tanto_ia);
+			Sleep(1000);
+			return false;
+		}
+	}
+	else {
+		if (tanto_ia > tanto_jug || (tanto_ia == tanto_jug && !jugador_es_mano)) { //idem al reves
+			printf("IA: \"%d\"\n", tanto_ia);
+			printf("Jug: \"Son buenas...\"\n");
+			Sleep(1000);
+			return false;
+		}
+		else {
+			printf("IA: \"%d\"\n", tanto_ia);
+			printf("Jug: \"%d son mejores!!\"\n", tanto_jug);
+			Sleep(1000);
+			return true;
+		}
+	}
+}
+
 int ia_canta_envido(std::vector<Carta> &mano_jugador, std::vector<Carta> &mano_ia, bool jugador_es_mano){
+	//lo mismo que la anterior funcion, pero invertido
 	int tanto_jug = calcular_tanto_jug(mano_jugador);
 	int tanto_ia = calcular_tanto_ia(mano_ia);
 	printf("IA: \"Envido!!!\"\n");
-	printf("ENTER para s�, ESC para no, 1 para Envido, 2 para Real envido, 3 para Falta envido");
+	printf("ENTER para si, ESC para no, 1 para Envido, 2 para Real envido, 3 para Falta envido\n");
 	while(1){ //verificador
 		char key = _getch();
     	if (key == 13) { //si quiero
@@ -222,7 +218,7 @@ int ia_canta_envido(std::vector<Carta> &mano_jugador, std::vector<Carta> &mano_i
     		int bca = rand()%5;
     		if(bca == 0){ //ia canta falta
     			printf("IA: \"Falta Envido!!!\"\n");
-				printf("ENTER para s�, ESC para no");
+				printf("ENTER para si, ESC para no\n");
 				while(1){ //verificador
 					char key = _getch();
    					if (key == 13) { //si quiero
@@ -237,7 +233,7 @@ int ia_canta_envido(std::vector<Carta> &mano_jugador, std::vector<Carta> &mano_i
 			} 
 			else if(bca == 1){ //ia canta real
 				printf("IA: \"Real Envido!!!\"\n");
-				printf("ENTER para s�, ESC para no, 1 para Falta envido");
+				printf("ENTER para si, ESC para no, 1 para Falta envido\n");
 				while(1){ //verificador
 					char key = _getch();
    					if (key == 13) { //si quiero
@@ -277,7 +273,7 @@ int ia_canta_envido(std::vector<Carta> &mano_jugador, std::vector<Carta> &mano_i
     		int bca = rand()%3;
     		if(bca == 0){ //ia canta falta
     			printf("IA: \"Falta Envido!!!\"\n");
-				printf("ENTER para s�, ESC para no");
+				printf("ENTER para si, ESC para no\n");
 				while(1){ //verificador
 					char key = _getch();
    					if (key == 13) { //si quiero
@@ -300,7 +296,7 @@ int ia_canta_envido(std::vector<Carta> &mano_jugador, std::vector<Carta> &mano_i
 				else return -5;
 			}
     	} 
-    	else if(key == '2'){ //canto falta envido
+    	else if(key == '3'){ //canto falta envido
     		printf("Jug: \"Falta Envido!!!\"\n");
 			if(rand()%4 == 0){ //IA quiere
 				printf("IA: \"Quiero!!!\"\n");

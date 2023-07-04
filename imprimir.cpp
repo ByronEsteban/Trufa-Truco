@@ -20,7 +20,7 @@ void imprimir_cartas(std::vector<Carta> &mano_jugador){
   	printf("\n\n");
 }
 
-void imprimir(std::vector<std::string> &opciones, std::vector<Carta> &cartas_tiradas_jug, std::vector<Carta> &cartas_tiradas_ia, std::vector<Carta> &mano_jugador){
+void imprimir(std::vector<std::string> &opciones, std::vector<Carta> &cartas_tiradas_jug, std::vector<Carta> &cartas_tiradas_ia, std::vector<Carta> &mano_jugador, bool turno_jug){
 	system("cls");
 	printf("Puntos jug: ");
 	for (int i = 0; i < puntos_jug; i++) {
@@ -38,9 +38,14 @@ void imprimir(std::vector<std::string> &opciones, std::vector<Carta> &cartas_tir
 	printf("\n\n\n");
 	imprimir_cartas_tiradas(cartas_tiradas_jug, cartas_tiradas_ia);
 	imprimir_cartas(mano_jugador);
+	if(!turno_jug){ 
+		printf("\033[41m Turno IA \n\n\033[40m");
+		printf("\033[90m");
+	} else printf("\033[44m Turno Jugador \n\n\033[40m");
 	printf("Seleccione una opcion:\n");
 	for (int i = 0; i < opciones.size(); i++) {
 		printf("%d. %s\n", i+1, opciones[i].c_str());
 	}
+	printf("\n\033[37m");
 }
 

@@ -65,13 +65,13 @@ void llenar_orden_cartas(Carta orden_de_cartas[], char *palos[]){
 
 void imprimir_reglas(char *palos[]){
 	system("cls");
-	printf(" Como jugar\n\n");
-	printf(" * Objetivo del juego: Que uno de los jugadores lleguen a los 30 puntos; estos puntos se dividen en dos, 15 y 15.\n   Los puntos se consiguen ganando rondas.\n");
-	printf("\n * Inicio del juego: Se reprten las cartas y comienza uno de los dos jugadores, llamado \"mano\".\n   En su turno, cada jugador debe tirar una carta, y ademas puede cantar truco, envido (si esta habilitado) y retirarse.\n   Una vez tirada la carta, el rival tirara la suya.\n   Quien tenga la carta mas alta (ver orden de cartas) gana y vuelve a tirar. Quien gane dos cartas gana la ronda\n");
+	printf("\033[1m Como jugar\033[0m\n\n");
+	printf(" * \033[4mObjetivo del juego:\033[0m Que uno de los jugadores lleguen a los 30 puntos; estos puntos se dividen en dos, 15 y 15.\n   Los puntos se consiguen ganando rondas.\n");
+	printf("\n * \033[4mInicio del juego:\033[0m Se reprten las cartas y comienza uno de los dos jugadores, llamado \"mano\".\n   En su turno, cada jugador debe tirar una carta, y ademas puede cantar truco, envido (si esta habilitado) y retirarse.\n   Una vez tirada la carta, el rival tirara la suya.\n   Quien tenga la carta mas alta (ver orden de cartas) gana y vuelve a tirar. Quien gane dos cartas gana la ronda\n");
 	printf("\n * El orden de cartas es:\n");
 	Carta orden_de_cartas[40];
     llenar_orden_cartas(orden_de_cartas, palos);
 	imprimir_orden_cartas(orden_de_cartas); //borrar despues
-	printf("\n * Cantos: Los jugadores pueden, en su turno, cantar TRUCO, para que la ronda se juegue por mas puntos.\n   Tambien, en su primer turno pueden cantar ENVIDO. A ambos cantos el rival puede subirlos y jugar asi por mas puntos\n\n");
+	printf("\n * \033[4mCantos:\033[0m Los jugadores pueden, en su turno, cantar TRUCO, para que la ronda se juegue por mas puntos.\n   Tambien, en su primer turno pueden cantar ENVIDO. A ambos cantos el rival puede subirlos y jugar asi por mas puntos\n\n");
 	printf(" Apreta ESC para salir: ");
 }

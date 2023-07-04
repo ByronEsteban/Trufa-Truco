@@ -6,8 +6,9 @@ void turno_jugador(std::vector<std::string> &opciones, std::vector<Carta> &carta
   	//cuando tiro una carta, rompe; sino (canto truco o envido), repite y me pide una carta.
   		if(ia_se_retira || jug_se_retira) return;
 		while(1){ //verificador
-			imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
+			imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, 1);
 			char key = _getch();
+			if(key == 27) exit(0);
 			opcion = key - '0'; //para convertir en int mi char
 			if(opcion >= 1 && opcion <= opciones.size()) break;
 		} //esta secuencia de ifs es para cubrir los distintos casos que pueden darse con las opciones
@@ -18,7 +19,7 @@ void turno_jugador(std::vector<std::string> &opciones, std::vector<Carta> &carta
 				opciones.erase(opciones.begin() + 4);
 				if(opcion >= 1 && opcion <= 3){
 					tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-1], mano_jugador, opciones, turno);
-					imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
+					imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, 0);
 					break;
 				}
 				if(opcion == 4) canta_truco(puntos_ronda, opciones, ia_puede_cantar_truco);
@@ -35,7 +36,7 @@ void turno_jugador(std::vector<std::string> &opciones, std::vector<Carta> &carta
 				if(opcion >= 1 && opcion <= 3){
 					tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-1], mano_jugador, opciones, turno);
 					//pasamos opcion-1 asi funciona como subindice (0, 1, 2)
-					imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
+					imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, 0);
 					break;
 				} 
 				if(opciones.size() == 5 && opcion == 4) canta_truco(puntos_ronda, opciones, ia_puede_cantar_truco);
@@ -50,7 +51,7 @@ void turno_jugador(std::vector<std::string> &opciones, std::vector<Carta> &carta
 		else if(turno == 1){
 			if(opcion == 1 || opcion == 2){ //variaciones del codigo para adaptarse a cada ronda
 				tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-1], mano_jugador, opciones, turno);
-				imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
+				imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, 0);
 				break;
 			}
 			if(opciones.size() == 4 && opcion == 3) canta_truco(puntos_ronda, opciones, ia_puede_cantar_truco);
@@ -62,7 +63,7 @@ void turno_jugador(std::vector<std::string> &opciones, std::vector<Carta> &carta
   		else{
 			if(opcion == 1) {
 				tira_carta(opcion-1, cartas_tiradas_jug, mano_jugador[opcion-1], mano_jugador, opciones, turno);
-				imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
+				imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, 0);
 				break;
 			}
 			if(opciones.size() == 3 && opcion == 2) canta_truco(puntos_ronda, opciones, ia_puede_cantar_truco);

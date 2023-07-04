@@ -49,7 +49,7 @@ void llenar_baraja(Carta baraja[], int valores[], char *palos[]){
 
 void truco(Carta baraja[]){ 
 	desordenar_baraja(baraja);
-  	puntos_jug = 0;
+  	puntos_jug = 30;
 	puntos_ia = 0;
   	bool jugador_es_mano = rand()%2;
 	while (puntos_jug < 30 && puntos_ia < 30){
@@ -96,7 +96,7 @@ void truco(Carta baraja[]){
 			//si el jugador no canto envido (envido == 0) la ia puede cantar
 			//la IA funciona principalmente mediante randoms porque no dio el tiempo para diseñarle una inteligencia
 			turno_ia(opciones, cartas_tiradas_ia, mano_ia, puntos_ronda, 0, ia_puede_cantar_truco);
-			imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
+			imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, 0);
 			if(ia_se_retira){
 				ganador = true;
 				break;
@@ -107,13 +107,13 @@ void truco(Carta baraja[]){
 			}
 		}
 		else{
-			imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
+			imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, 0);
 			if(rand()%3 != 0){
 				puntos_envido = ia_canta_envido(mano_jugador, mano_ia, jugador_es_mano);
 				opciones.erase(opciones.begin() + 4); //borramos la opcion de envido
 			} 
 			turno_ia(opciones, cartas_tiradas_ia, mano_ia, puntos_ronda, 0, ia_puede_cantar_truco);
-			imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
+			imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, 0);
 			if(ia_se_retira){
 				ganador = true;
 				break;
@@ -137,7 +137,7 @@ void truco(Carta baraja[]){
 			hizo_primera = false;
 			carta_ganada_ia++;
 			turno_ia(opciones, cartas_tiradas_ia, mano_ia, puntos_ronda, 1, ia_puede_cantar_truco);
-			imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
+			imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, 0);
 			if(ia_se_retira){
 				ganador = true;
 				break;
@@ -170,7 +170,7 @@ void truco(Carta baraja[]){
 				break;
 			}
 			turno_ia(opciones, cartas_tiradas_ia, mano_ia, puntos_ronda, 1, ia_puede_cantar_truco);
-			imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
+			imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, 0);
 			if(ia_se_retira){
 				ganador = true;
 				break;
@@ -185,7 +185,7 @@ void truco(Carta baraja[]){
 			carta_ganada(carta_ganada_jug, carta_ganada_ia, hizo_primera, 1, ganador); //esta funcion verifica si alguien gano
 			if(ganador == 0 || ganador == 1) break; //si alguno gano rompe, sino continua
 			turno_ia(opciones, cartas_tiradas_ia, mano_ia, puntos_ronda, 2, ia_puede_cantar_truco);
-			imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
+			imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, 0);
 			if(ia_se_retira){
 				ganador = true;
 				break;
@@ -219,7 +219,7 @@ void truco(Carta baraja[]){
 				break;
 			}
 			turno_ia(opciones, cartas_tiradas_ia, mano_ia, puntos_ronda, 2, ia_puede_cantar_truco);
-			imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador);
+			imprimir(opciones, cartas_tiradas_jug, cartas_tiradas_ia, mano_jugador, 0);
 			if(ia_se_retira){
 				ganador = true;
 				break;
@@ -241,27 +241,54 @@ void truco(Carta baraja[]){
     	if(!ganador){ //gana ia xq == 0
     		if(puntos_envido < 0) { //si gano el tanto se le suma
     			puntos_ia += puntos_ronda + puntos_envido*-1;
+    			printf("Puntos ganados jug = 0\n");
+    			printf("Puntos ganados ia = %d\n", puntos_ronda + puntos_envido*-1);
 			} 
 			else { //sino se le suma al jug
 				puntos_jug += puntos_envido;
 				puntos_ia += puntos_ronda;
+				printf("Puntos ganados jug = %d\n", puntos_envido);
+				printf("Puntos ganados ia = %d\n", puntos_ronda);
 			}
 		} 
 		else { //gana jug xq == 1
 			if(puntos_envido > 0) { //viceversa
     			puntos_jug += puntos_ronda + puntos_envido;
+    			printf("Puntos ganados jug = %d\n", puntos_ronda + puntos_envido);
+				printf("Puntos ganados ia = 0\n");
 			} 
 			else {
 				puntos_ia += puntos_envido*-1;
 				puntos_jug += puntos_ronda;
+				printf("Puntos ganados jug = %d\n", puntos_ronda);
+				printf("Puntos ganados ia = %d\n", puntos_envido*-1);
 			}
 		}
-		printf("Puntos jug = %d\n", puntos_jug);
-		printf("Puntos IA = %d\n", puntos_ia);
 		Sleep(2000);
 		jugador_es_mano = !jugador_es_mano; //la siguiente ronda comenzara el otro jug
 	}
-	printf("GANASTE\n");
+	system("cls");
+	if(puntos_jug >= 30){
+		printf("\n\033[34m");
+		printf("               \n");
+		printf("   GANASTE!!   \n");
+		printf("               \n");
+		printf("\nApreta ENTER para volver al menu");
+		while(1){
+			char key = _getch();
+			if(key == 13) break;
+		}
+	}
+	else{
+		printf("\033[42m               ");
+				printf("   IA GANO :(  \n");
+				printf("               \n");
+		printf("\nApreta ENTER para volver al menu");
+		while(1){
+			char key = _getch();
+			if(key == 13) break;
+		}
+	}
 }
 
 void desordenar_baraja(Carta baraja[]){ 
