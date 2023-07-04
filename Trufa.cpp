@@ -308,7 +308,12 @@ int main() { //0
     char *palos[4] = {"Espada", "Basto", "Oro", "Copa"};
     llenar_baraja(baraja, valores, palos);
     while(1){ //este while funciona como verificador de que ingreso una opcion valida
-    	printf("Opciones:\n1. Truco\n2. Trufa - NO DISPONIBLE\n3. Reglas\n4. Apreta ESC para salir\n");
+    	system("cls");
+		printf("\033[1m");
+    	printf("\t +-------+ \n");
+    	printf("\t | TRUFA | \n");
+    	printf("\t +-------+ \n\n");
+    	printf("Opciones:\033[0m\n1. Truco\n2. Trufa - NO DISPONIBLE\n3. Reglas\n4. Apreta ESC para salir\n");
     	printf("Elegi algo: ");
     	char key = _getch();  // lee el primer caracter que se ingrese
     	if(key == '1') truco(baraja);
@@ -317,11 +322,10 @@ int main() { //0
     		imprimir_reglas(palos);
     		while(1){
     			char key = _getch();
-    			if(key == 27) break;
+    			if(key == 27) break; //27 es ESC en ASCII; 13 es ENTER en ASCII (se usara mas adelante)
 			}
 		}
     	else if (key == 27 || key == '4') break;
-    	system("cls");
 	} 
     return 0;
 }
