@@ -10,6 +10,11 @@ El programa principal es el "Trufa.cpp". En "trufa.hpp" estan declaradas las fun
 + Suma los puntos (cuando alguno llega a 30 termina)
 + Tiene los estilos completos
 + Imprimir reglas
+### Agregar:
++ Mensaje para cuando ganas
++ Opcion de salir del programa
++ Hacer el manual de usuario
++ Completar el documento
 ### No vamos a:
 + Hacer la trufa
 + Hacer la flor
